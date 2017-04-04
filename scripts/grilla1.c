@@ -5,6 +5,7 @@
 
 void llenar(int* red,int n_fila, int n_columna, float proba);
 void imprimir(int *red, int m, int n);
+//Comentario sticco
 
 int main(){
 	int* red;
