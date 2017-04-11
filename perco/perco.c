@@ -44,7 +44,7 @@ int main(int argc,char *argv[])
   imprimir(red,n,n);    
   hoshen(red,n);
 
-  puts("\n RESULTADO:\n");
+  puts("\nRESULTADO:\n");
 
   imprimir(red,n,n);
 
@@ -129,7 +129,7 @@ int hoshen(int *red,int n)
 	if (*(red+i+j))
 	  {
 	    s1=*(red+i+j-1); 
-            s2=*(red+i+j-n);
+      s2=*(red+i+j-n);
 
 	    if (s1*s2>0)   // Si esta en el caso 4 de la clase de guille
 	      {
@@ -201,8 +201,6 @@ int  actualizar(int *red,int *clase,int s,int frag){
 
 void  etiqueta_falsa(int *red,int *clase,int s1,int s2){
   int i,n;  
-  //s1=red[i-n];  // Me parece que no hay que definirlos xq vienen definidos de arriba 
-  //s2=red[i-1];  
    if(s1==s2){
      red[i]=s1; 
     }
