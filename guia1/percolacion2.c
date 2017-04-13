@@ -3,8 +3,8 @@
 #include <math.h>
 #include <time.h>
 
-#define P     2         // 1/2^P, P=16
-#define Z     10          // iteraciones
+#define P     16         // 1/2^P, P=16
+#define Z     3          // iteraciones
 #define N     4          // lado de la red simulada
 
 void  llenar(int *red,int n,float proba);
@@ -19,7 +19,9 @@ int main(int argc,char *argv[])
 {
   int    i,j,*red,n,z;
   float  prob,denominador;
-
+  float p_med = 0;
+  float p_cuadrado = 0;
+  float varianza=0;
   n=N;
   z=Z;
 
@@ -36,7 +38,6 @@ int main(int argc,char *argv[])
   for(i=0;i<z;i++)
     {
       prob=0.5;
-      //printf("%f\n",prob );
       denominador=2.0;
  
       
@@ -52,11 +53,20 @@ int main(int argc,char *argv[])
           if (percola(red,n)) 
              prob+=(-1.0/denominador); 
           else prob+=(1.0/denominador);
-          printf("%f\n",prob );
         }
+        printf("%f\n",prob );
+        p_med+=prob;
+        p_cuadrado+=prob*prob;
         //printf("%f\n",prob );
     }
 
+  p_med = p_med/z;
+  p_cuadrado = p_cuadrado/Z;
+  varianza = p_cuadrado - p_med*p_med;
+  printf("\n");
+  printf("%f\n",p_med );
+  printf("%f\n",p_cuadrado);
+  printf("%f\n",varianza);
   free(red);
 
   return 0;
