@@ -13,6 +13,8 @@ int   actualizar(int *red,int *clase,int s,int frag);
 void  etiqueta_falsa(int *red,int *clase,int s1,int s2);
 void  corregir_etiqueta(int *red,int *clase,int n);
 int   percola(int *red, int n);
+void  histo_fperco(float max,int *red,int n,float sampleo);
+void  escribir(float *vector1,float *vector2,int max);
 
 
 int main(int argc,char *argv[])
@@ -45,7 +47,6 @@ int main(int argc,char *argv[])
       for(j=0;j<P;j++)
         {
           llenar(red,n,prob);
-          //imprimir(red,n,n);
           hoshen(red,n);
         
           denominador=2.0*denominador;
@@ -67,6 +68,8 @@ int main(int argc,char *argv[])
   printf("%f\n",p_med );
   printf("%f\n",p_cuadrado);
   printf("%f\n",varianza);
+
+  histo_fperco(10.0,red,n,3);
   free(red);
 
   return 0;
@@ -300,3 +303,53 @@ int percola (int *red, int n){
 	}
 	return 0;
 }	
+
+
+void histo_fperco(float max,int *red,int n,float sampleo){
+  int   iterador,i;
+  float prob=0;
+  float *distribucion;
+  float *vector_proba;
+
+  distribucion = (float *)malloc(max*sizeof(float));
+  vector_proba = (float *)malloc(max*sizeof(float));
+
+  srand(time(NULL));
+  for(iterador=0;iterador<max;iterador++){
+    
+    int contador=0;
+    prob = iterador/max;
+    for(i=0;i<sampleo;i++){
+      llenar(red,n,prob);
+      hoshen(red,n);
+      if (percola(red,n)) 
+               contador+=1; 
+           }
+      *distribucion = contador/sampleo;
+      distribucion = distribucion+i;
+      *vector_proba = prob;
+      vector_proba = vector_proba+i;
+
+    }
+  printf("%i\n",vector_proba );
+  escribir(vector_proba,distribucion,10);
+  }
+
+void escribir(float *vector1,float *vector2,int max){
+  int i;
+  FILE *fp;
+  fp = fopen("histograma.txt","w");
+  
+  for(i=0;i<max;i++){
+
+    fprintf(fp, "%f\t%f\n",*vector1,*vector2 );
+    vector1=vector1+i;
+    vector2=vector2+i;
+  }  
+
+  fclose(fp);
+
+}
+
+
+  
