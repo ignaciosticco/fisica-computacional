@@ -99,6 +99,8 @@ int hoshen(int *red,int n)
   s1=0;
   frag=2;
   if (*red) frag=actualizar(red,clase,s1,frag);
+  puts("\n");
+  imprimir(red,n,n);   
   
   // primera fila de la red
 
@@ -108,6 +110,9 @@ int hoshen(int *red,int n)
          {
            s1=*(red+i-1);  
            frag=actualizar(red+i,clase,s1,frag);
+
+             puts("\n");
+             imprimir(red,n,n);
          }
     }
   
@@ -123,6 +128,8 @@ int hoshen(int *red,int n)
          {
            s1=*(red+i-n); 
            frag=actualizar(red+i,clase,s1,frag);
+             puts("\n");
+             imprimir(red,n,n);
          }
 
       for(j=1;j<n;j++)
@@ -180,14 +187,14 @@ void imprimir(int *red, int n){
   }
 }
 
-int  actualizar(int *red,int *clase,int s,int frag){
+int  actualizar(int *red,int *clase,int s1,int frag){
   
-  while(clase[s]<0){
-      s=-clase[s];
+  while(clase[s1]<0){
+      s1=-clase[s1];
     }   
 
-  if(s!=0){
-    *red=clase[s];
+  if(s1!=0){
+    *red=clase[s1];
 
   }
   else{
@@ -213,10 +220,12 @@ void  etiqueta_falsa(int *red,int *clase,int s1,int s2){
     }
     if(s1<s2){
       clase[s2]=-s1;
+      clase[s1]=s1;
       red[i]=s1;
     }
     if(s2<s1){
       clase[s1]=-s2;
+      clase[s2]=s2;
       red[i]=s2;
     }
 }
