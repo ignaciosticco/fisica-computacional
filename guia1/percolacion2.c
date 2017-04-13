@@ -3,6 +3,10 @@
 #include <math.h>
 #include <time.h>
 
+#define P     2         // 1/2^P, P=16
+#define Z     10          // iteraciones
+#define N     4          // lado de la red simulada
+
 void  llenar(int *red,int n,float proba);
 int   hoshen(int *red,int n);
 int   actualizar(int *red,int *clase,int s,int frag);
@@ -10,10 +14,10 @@ void  etiqueta_falsa(int *red,int *clase,int s1,int s2);
 void  corregir_etiqueta(int *red,int *clase,int n);
 int   percola(int *red, int n);
 
-/*
+
 int main(int argc,char *argv[])
 {
-  int    i,j,*red;
+  int    i,j,*red,n,z;
   float  prob,denominador;
 
   n=N;
@@ -27,19 +31,20 @@ int main(int argc,char *argv[])
     
   red=(int *)malloc(n*n*sizeof(int));
 
-
+  srand(time(NULL));
 
   for(i=0;i<z;i++)
     {
       prob=0.5;
+      //printf("%f\n",prob );
       denominador=2.0;
  
-      srand(time(NULL));
+      
 
       for(j=0;j<P;j++)
         {
           llenar(red,n,prob);
-      
+          //imprimir(red,n,n);
           hoshen(red,n);
         
           denominador=2.0*denominador;
@@ -47,7 +52,9 @@ int main(int argc,char *argv[])
           if (percola(red,n)) 
              prob+=(-1.0/denominador); 
           else prob+=(1.0/denominador);
+          printf("%f\n",prob );
         }
+        //printf("%f\n",prob );
     }
 
   free(red);
@@ -55,8 +62,9 @@ int main(int argc,char *argv[])
   return 0;
 }
 
-*/
+/*
 
+// main antiguo (usado xa testear generador de etiquetas)
 int main()
 {
   // int argc,char *argv[]
@@ -70,14 +78,7 @@ int main()
     if( scanf("%f", &proba) != 1){
       printf("No ingreaste un numero float..\n");};
 
-/*
-  if (argc==3) 
-     {
-       sscanf(argv[1],"%d",&n);
-       sscanf(argv[2],"%d",&prob);
-     }
-  
-  */
+
 
   red=(int *)malloc(n*n*sizeof(int));
   
@@ -99,7 +100,7 @@ int main()
   return 0;
 }
 
-
+*/
 
 int hoshen(int *red,int n)
 {
@@ -183,7 +184,7 @@ int hoshen(int *red,int n)
 
 void llenar(int* red,int n,float proba){
 	int i,j;
-	srand(time(NULL));  
+	//srand(time(NULL));  
 	for(i=0;i<n;i=i+1){
 		for(j=0;j<n;j=j+1){
 			int r = rand()%10; // random de 0 a 9
@@ -280,7 +281,7 @@ int percola (int *red, int n){
 				s2=*(red+j+(n-1)*n);
 		
 				if(s1==s2){
-					printf("%d",s1);
+					//printf("%d",s1);
 					return 1;
 				}
 								
