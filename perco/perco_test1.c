@@ -70,6 +70,8 @@ int hoshen(int *red,int n)
   s1=0;
   frag=2;
   if (*red) frag=actualizar(red,clase,s1,frag);
+               //puts("\n");
+               //imprimir(red,n,n);
   
   // primera fila de la red
 
@@ -79,6 +81,8 @@ int hoshen(int *red,int n)
          {
            s1=*(red+i-1);  
            frag=actualizar(red+i,clase,s1,frag);
+               //puts("\n");
+               //imprimir(red,n,n);
          }
     }
   
@@ -94,6 +98,8 @@ int hoshen(int *red,int n)
          {
            s1=*(red+i-n); 
            frag=actualizar(red+i,clase,s1,frag);
+              // puts("\n");
+               //imprimir(red,n,n);
          }
 
       for(j=1;j<n;j++)
@@ -110,6 +116,8 @@ int hoshen(int *red,int n)
 	      { if (s1!=0) frag=actualizar(red+i+j,clase,s1,frag);
 	        else       frag=actualizar(red+i+j,clase,s2,frag);
 	      }
+        //puts("\n");
+        //imprimir(red,n,n);
 	  }
     }
 
@@ -159,6 +167,7 @@ int  actualizar(int *red,int *clase,int s,int frag){
 
   if(s!=0){
     *red=clase[s];
+    clase[s]=s;
 
   }
   else{
@@ -174,9 +183,6 @@ void  etiqueta_falsa(int *red,int *clase,int s1,int s2){
 	int i,n;	
 	//s1=red[i-n];	// Me parece que no hay que definirlos xq vienen definidos de arriba 
 	//s2=red[i-1];	
-	 if(s1==s2){
-     red[i]=s1; 
-    }
 	 
 		while(clase[s1]<0){
 			s1=-clase[s1];
@@ -184,13 +190,19 @@ void  etiqueta_falsa(int *red,int *clase,int s1,int s2){
 		while(clase[s2]<0){
 			s2=-clase[s2];
 		}
+    if(s1==s2){
+     *red=s1; 
+     clase[s1]=s1;
+    }
 		if(s1<s2){
 			clase[s2]=-s1;
-			red[i]=s1;
+      clase[s1]=s1;
+			*red=s1;
 		}
     if(s2<s1){
 			clase[s1]=-s2;
-			red[i]=s2;
+      clase[s2]=s2;
+			*red=s2;
 		}
 }
 
@@ -200,10 +212,10 @@ void  corregir_etiqueta(int *red,int *clase,int n){
  
 	for(i=0;i<n*n;i++)
   { 
-		s=red[i];
+		s=*(red+i);
 		while(clase[s]<0){
 			s=-clase[s];
-      red[i]=s;
+      *(red+i)=s;
 		}
 	}
   
