@@ -66,11 +66,11 @@ int main(int argc,char *argv[])
         p_cuadrado+=prob*prob;
     }
 
-  p_med = p_med/z;
-  p_cuadrado = p_cuadrado/Z;
-  varianza = p_cuadrado - p_med*p_med;
+   p_med = p_med/z;
+   p_cuadrado = p_cuadrado/Z;
+   varianza = p_cuadrado - p_med*p_med;
 
-  histo_fperco(10.0,red,n,30,distribucion,vector_proba);
+histo_fperco(10.0,red,n,30,distribucion,vector_proba);
 
   printf("\n");
   //Calculos para el vector ns:
