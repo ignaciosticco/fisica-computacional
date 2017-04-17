@@ -15,9 +15,9 @@ void  corregir_etiqueta(int *red,int *clase,int n);
 int   percola(int *red, int n);
 void  histo_fperco(float max,int *red,int n,float sampleo,float *vector_proba,float *distribucion);
 void  escribir(float *vector1,float *vector2,int max);
-int cluster_infinito(int etiqueta, int* vector);
-void calcula_ns(int *red,int n,int* vector);
-void imprimir(int *red, int n);
+int   cluster_infinito(int etiqueta, int* vector);
+void  calcula_ns(int *red,int n,int* vector);
+void  imprimir(int *red, int n);
 
 int main(int argc,char *argv[])
 {
@@ -62,21 +62,18 @@ int main(int argc,char *argv[])
              prob+=(-1.0/denominador); 
           else prob+=(1.0/denominador);
         }
-        //printf("prob= %f\n",prob );
         p_med+=prob;
         p_cuadrado+=prob*prob;
-        //printf("%f\n",prob );
     }
 
   p_med = p_med/z;
   p_cuadrado = p_cuadrado/Z;
   varianza = p_cuadrado - p_med*p_med;
 
-
   histo_fperco(10.0,red,n,30,distribucion,vector_proba);
 
-   printf("\n");
-//Calculos para el vector ns:
+  printf("\n");
+  //Calculos para el vector ns:
   int* vector;
   vector=(int *)malloc(n*n*sizeof(int));  
   for(i=0;i<n*n;i++){
@@ -93,47 +90,6 @@ int main(int argc,char *argv[])
 
   return 0;
 }
-
-/*
-
-// main antiguo (usado xa testear generador de etiquetas)
-
-int main()
-{
-  // int argc,char *argv[]
-  int    i,j,*red,n;
-  float proba;
-
-  printf("Ingrese numero de columnas: ");
-    if (scanf("%d", &n) != 1){
-      printf("No ingreaste un numero entero.\n");};
-    printf("Ingrese probabilidad de ocupacion (entre 0 y 1): ");
-    if( scanf("%f", &proba) != 1){
-      printf("No ingreaste un numero float..\n");};
-
-
-
-  red=(int *)malloc(n*n*sizeof(int));
-  
-  llenar(red,n,proba);
-  imprimir(red,n,n);    
-  hoshen(red,n);
-
-  puts("\n");
-
-  imprimir(red,n,n);
-  percola(red,n);
-  if (percola(red,n)){
-	printf("PERCOLO \n");
-} else {
-	printf("No percolo \n");
-}
-  free(red);
-
-  return 0;
-}
-
-*/
 
 int hoshen(int *red,int n)
 {
@@ -207,8 +163,6 @@ int hoshen(int *red,int n)
 
   corregir_etiqueta(red,clase,n);
   
- 
-
   free(clase);
 
   return 0;
@@ -314,7 +268,6 @@ int percola (int *red, int n){
 				s2=*(red+j+(n-1)*n);
 		
 				if(s1==s2){
-					//printf("%d",s1);
 					return s1;
 				}
 								
@@ -357,8 +310,6 @@ void escribir(float vector1[],float vector2[],int max){
   for(i=0;i<max;i++){
 
     fprintf(fp, "%f\t%f\n",vector1[i],vector2[i] );
-    //vector1=vector1+i;
-    //vector2=vector2+i;
   }  
 
   fclose(fp);
