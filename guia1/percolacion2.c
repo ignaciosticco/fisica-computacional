@@ -72,26 +72,9 @@ int main(int argc,char *argv[])
   p_cuadrado = p_cuadrado/Z;
   varianza = p_cuadrado - p_med*p_med;
 
-  //printf("\n");
-  //printf("p_med= %f\n",p_med );
-  //printf("p_cuadrado= %f\n",p_cuadrado);
-  //printf("varianza= %f\n",varianza);
-  //Sintaxis de array: type arrayName [ arraySize ];
-  //Inicializacion de array: double balance[5] = {1000.0, 2.0, 3.4, 7.0, 50.0}; o con ciclio.
 
   histo_fperco(10.0,red,n,30,distribucion,vector_proba);
-  /*
-  int r;
-  for(r=1;r<10;r++){
-    printf("desde main=%f\n",vector_proba[r]);
 
-  }
-  */
-  //printf("desde main=%f\n",vector_proba[4]);
-  //escribir(vector_proba,distribucion,10);
-
-  //free(distribucion);
-  //free(vector_proba);
    printf("\n");
 //Calculos para el vector ns:
   int* vector;
