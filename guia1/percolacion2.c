@@ -4,7 +4,7 @@
 #include <time.h>
 
 #define P     16         // P=cantidad de veces que hace biseccion -  1/2^P, P=16  
-#define Z     30          // iteraciones
+#define Z     60         // iteraciones
 #define N     4          // lado de la red simulada
 
 void  llenar(int *red,int n,float proba);
@@ -18,7 +18,7 @@ void  escribir(float *vector1,float *vector2,int max);
 int   cluster_infinito(int etiqueta, int* vector);
 void  calcula_ns(int *red,int n,int* vector);
 void  imprimir(int *red, int n);
-void resultado1a (int vector1[],float vector2[],float vector3[], int max);
+void  resultado1a (int vector1[],float vector2[],float vector3[], int max);
 
 
 
@@ -27,16 +27,16 @@ int main(int argc,char *argv[])
 {
   int    i,j,*red,n,z,k;
   float  prob,denominador;
-  float p_med = 0;
-  float p_cuadrado = 0;
-  int   size_max=10;          // cantidad de probabilidades 
-  float distribucion[size_max];
-  float vector_proba[size_max];
-  int L[5]={4,16,32,64,128};	//tamaño de red
-  float proba_cr[5];		//bisección 1a
-  float varianza[5];		//bisección 1a
+  float  p_med = 0;
+  float  p_cuadrado = 0;
+  int    size_max=10;          // cantidad de probabilidades 
+  float  distribucion[size_max];
+  float  vector_proba[size_max];
+  int    L[5]={4,16,32,64,128};	//tamaño de red
+  float  proba_cr[5];		//bisección 1a
+  float  varianza[5];		//bisección 1a
     
-  printf("%i",L[1]);
+  
   n=N;
   z=Z;
  
@@ -58,20 +58,19 @@ int main(int argc,char *argv[])
 
 	
     red=(int *)malloc(n*n*sizeof(int));
-  srand(time(NULL));
+    //srand(time(NULL));
 
-  for(i=0;i<z;i++)
-    {
+    for(i=0;i<z;i++)
+     {
       prob=0.5;
-      denominador=2.0;
- 
-      
-
+      denominador=2.0;    
+      //srand(time(NULL));
       for(j=0;j<P;j++)
         {
+          //srand(time(NULL));
           llenar(red,n,prob);
           hoshen(red,n);
-        
+          
           denominador=2.0*denominador;
 
           if (percola(red,n)) 
@@ -80,27 +79,21 @@ int main(int argc,char *argv[])
         }
         p_med+=prob;
         p_cuadrado+=prob*prob;
-    }
+      }
 
-<<<<<<< HEAD
-   p_med = p_med/z;
-   p_cuadrado = p_cuadrado/Z;
-   varianza = p_cuadrado - p_med*p_med;
 
-histo_fperco(10.0,red,n,30,distribucion,vector_proba);
-=======
-  proba_cr[k] = p_med/z;
-  p_cuadrado = p_cuadrado/z;
-  varianza[k] = p_cuadrado - (p_med*p_med)/(z*z);
-  free(red);
+     proba_cr[k] = p_med/z;
+     p_cuadrado = p_cuadrado/z;
+     varianza[k] = p_cuadrado - (p_med*p_med)/(z*z);
+     free(red);
 
-}
+ }
 
   resultado1a(L,proba_cr,varianza,5);
 
-/*  histo_fperco(10.0,red,n,30,distribucion,vector_proba);
->>>>>>> ee1912428a34cc7853e569f6ffba6f93d6f94176
+  histo_fperco(10.0,red,n,30,distribucion,vector_proba);
 
+  /*
   printf("\n");
   //Calculos para el vector ns:
   int* vector;
@@ -111,14 +104,13 @@ histo_fperco(10.0,red,n,30,distribucion,vector_proba);
   calcula_ns(red,n,vector);
   // fin de los calculos del vector ns
 
-  ////////
-  printf("Culster infinito: %i\n", cluster_infinito(percola(red,n),vector)); 
-  /////// */
+  */
   //free(red);
 
 
   return 0;
 }
+
 
 int hoshen(int *red,int n)
 {
@@ -200,7 +192,7 @@ int hoshen(int *red,int n)
 
 void llenar(int* red,int n,float proba){
 	int i,j;
-	//srand(time(NULL));  
+	srand(time(NULL));  
 	for(i=0;i<n;i=i+1){
 		for(j=0;j<n;j=j+1){
 			int r = rand()%10; // random de 0 a 9
@@ -326,9 +318,9 @@ void histo_fperco(float max,int *red,int n,float sampleo,float *vector_proba,flo
     vector_proba[iterador] = prob;
     }
   
-  printf("elemento vector_proba= %f\n",vector_proba[4]);
+  //printf("elemento vector_proba= %f\n",vector_proba[4]);
   escribir(vector_proba,distribucion,10);
-  imprimir(red,4); 	
+  //imprimir(red,4); 	
   }
 
 void escribir(float vector1[],float vector2[],int max){
@@ -349,7 +341,7 @@ void calcula_ns(int *red,int n,int* vector){
   int i=0;
   int* vector_ns;
   vector_ns = (int *)malloc(n*n*sizeof(int));
-  imprimir(red,4); 
+  //imprimir(red,4); 
   for(i=0;i<n*n;i++){       // Inicializo con ceros al vector_ns
     vector_ns[i]=0;
   }
@@ -360,7 +352,7 @@ void calcula_ns(int *red,int n,int* vector){
     i = i+1;
   }
   printf("Vector: \n");
-  imprimir(vector,n); 
+  //imprimir(vector,n); 
   i=0;
   vector=vector+1;      // Empiezo desde el segundo elemento de vector para no contar los clusters de size cero.
   while(i<n*n){         //vector_ns guarda la cantidad de clusters (n) de tamaño s
@@ -371,7 +363,7 @@ void calcula_ns(int *red,int n,int* vector){
     i = i+1;
   } 
   printf("Vector_ns: \n");
-  imprimir(vector_ns,n); 
+  //imprimir(vector_ns,n); 
 }
 
 
