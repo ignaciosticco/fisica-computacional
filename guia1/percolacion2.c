@@ -4,7 +4,7 @@
 #include <time.h>
 
 #define P     16         // P=cantidad de veces que hace biseccion -  1/2^P, P=16  
-#define Z     30          // iteraciones
+#define Z     300          // iteraciones
 #define N     4          // lado de la red simulada
 
 void  llenar(int *red,int n,float proba);

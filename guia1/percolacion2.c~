@@ -84,7 +84,7 @@ int main(int argc,char *argv[])
 
   proba_cr[k] = p_med/z;
   p_cuadrado = p_cuadrado/z;
-  varianza[k] = p_cuadrado - p_med*p_med;
+  varianza[k] = p_cuadrado - (p_med*p_med)/(z*z);
   free(red);
 
 }
