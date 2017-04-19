@@ -19,7 +19,7 @@ int   cluster_infinito(int etiqueta, int* vector);
 void  calcula_ns(int *red,int n,int* vector);
 void  imprimir(int *red, int n);
 void  resultado1a (int vector1[],double vector2[],double vector3[], int max);
-
+void resultado2(int n,int cantidad_probas,int z);
 
 
 
@@ -98,19 +98,10 @@ int main(int argc,char *argv[])
   //////// //////// /////////////
 
   //////// PARA el 2:   /////////////
-  
-  int* vector;
-  n=16;
-  vector=(int *)malloc(n*n*sizeof(int));  
-  for(i=0;i<n*n;i++){
-      vector[i]=0;
-  } 
-  red = (int *)malloc(n*n*sizeof(int));
-  llenar(red,n,0.5);
-  hoshen(red,n);
-  calcula_ns(red,n,vector);
-  imprimir(vector, n);
-
+  n = 4;                    // tamaño de la red
+  int cantidad_probas=9;  
+  z = 1000;     
+  resultado2(n,cantidad_probas,z);
   //////// //////// /////////////
 
   
@@ -300,8 +291,7 @@ int percola (int *red, int n){
     
         if(s1==s2){
           return s1;
-        }
-                
+        }               
       }
     }
   }
@@ -339,7 +329,7 @@ void histo_fperco(int total_proba,int *red,int n,float max_sample){
 void escribir(float vector1[],float vector2[],int total_proba){
   int i;
   FILE *fp;
-  fp = fopen("resultado1b_n4_1.txt","w");
+  fp = fopen("resultado2.txt","w");
   
   for(i=0;i<total_proba;i++){
 
@@ -351,12 +341,15 @@ void escribir(float vector1[],float vector2[],int total_proba){
 
 
 void calcula_ns(int *red,int n,int* vector){
-  int i=0;
+  int i;
   int* vector_ns;
   vector_ns = (int *)malloc(n*n*sizeof(int));
   for(i=0;i<n*n;i++){       // Inicializo con ceros al vector_ns
     vector_ns[i]=0;
   }
+  for(i=0;i<n*n;i++){       // Inicializo con ceros al VECTOR
+      vector[i]=0;
+  } 
   i=0;
   while(i<n*n){            // Este vector guarda todos los clusters
     vector[*red] = vector[*red] + 1;  // En la coordeanda i guarda la cantidad de nodos con etiqueta i.
@@ -398,6 +391,35 @@ void resultado1a (int vector1[],double vector2[],double vector3[], int max){
 
   fclose(fp);
 }
+
+void resultado2(int n,int cantidad_probas,int z){
+  int itera_proba,sample,i,etiqueta,masa;
+  int vector[n*n];
+  float proba[cantidad_probas];
+  float fuerza_cluster_percolante[cantidad_probas];
+  int* red;
+  float p,densidad;
+
+  red = (int *)malloc(n*n*sizeof(int)); 
+
+  for (itera_proba=0;itera_proba<cantidad_probas;itera_proba++){
+    p = 0.1+itera_proba/10.0;
+    densidad=0.0;
+    
+    for(sample=0;sample<z;sample++){  
+        llenar(red,n,p); 
+        hoshen(red,n);
+        etiqueta=percola(red,n);
+        calcula_ns(red,n,vector);
+        masa = cluster_infinito(etiqueta,vector); 
+        densidad += masa/((float)n*(float)n);   
+    }
+    proba[itera_proba] = p;
+    fuerza_cluster_percolante[itera_proba]=densidad/(float)z;
+    
+  }
+  escribir(proba,fuerza_cluster_percolante,cantidad_probas);
+} 
 
 
   
