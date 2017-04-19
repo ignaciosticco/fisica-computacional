@@ -5,7 +5,7 @@
 
 #define P     16        // P=cantidad de veces que hace biseccion -  1/2^P, P=16  
 #define Z     100      // iteraciones
-#define N     4         // lado de la red simulada
+#define N     4        // lado de la red simulada
 
 void  llenar(int *red,int n,float proba);
 int   hoshen(int *red,int n);
@@ -13,8 +13,8 @@ int   actualizar(int *red,int *clase,int s,int frag);
 void  etiqueta_falsa(int *red,int *clase,int s1,int s2);
 void  corregir_etiqueta(int *red,int *clase,int n);
 int   percola(int *red, int n);
-void  histo_fperco(float max,int *red,int n,float sampleo,float *vector_proba,float *distribucion);
-void  escribir(float *vector1,float *vector2,int max);
+void  histo_fperco(int total_proba,int *red,int n,float max_sample);
+void  escribir(float vector1[],float vector2[],int total_proba);
 int   cluster_infinito(int etiqueta, int* vector);
 void  calcula_ns(int *red,int n,int* vector);
 void  imprimir(int *red, int n);
@@ -40,7 +40,9 @@ int main(int argc,char *argv[])
   
   n=N;
   z=Z;
-  
+  /*  
+  // PARA el 1a:
+
   for (k=0;k<5;k++)
     {
   
@@ -82,10 +84,14 @@ int main(int argc,char *argv[])
      free(red);
 
  }
+  //resultado1a(L,proba_cr,varianza,5);
+  */
 
-  resultado1a(L,proba_cr,varianza,5);
+  // PARA el 1b:
 
-  //histo_fperco(10.0,red,n,30,distribucion,vector_proba);
+  n = 32; //tamaño de la red 
+  red = (int *)malloc(n*n*sizeof(int));
+  histo_fperco(10,red,n,30);
 
   /*
   printf("\n");
@@ -294,34 +300,39 @@ int percola (int *red, int n){
 }	
 
 
-void histo_fperco(float max,int *red,int n,float sampleo,float *vector_proba,float *distribucion){
-  int   iterador,i;
+void histo_fperco(int total_proba,int *red,int n,float max_sample){
+  // n= tamaño de la red. 
+  int   itera_proba,sample,contador;
   float prob=0;
+  float vector_proba [total_proba];
+  float distribucion [total_proba];
+  float denominador,primera_proba;
+  denominador = total_proba*10.0;
+  primera_proba = 0.55;
 
-  srand(time(NULL));
-  for(iterador=0;iterador<max;iterador++){
-    
-    int contador=0;
-    prob = iterador/max;    
-    for(i=0;i<sampleo;i++){
+  for(itera_proba=0;itera_proba < total_proba;itera_proba++){
+    contador=0;
+
+    prob = primera_proba + itera_proba/denominador;      
+    for(sample=0;sample<max_sample;sample++){
       llenar(red,n,prob);
       hoshen(red,n);
       if (percola(red,n)) 
-               contador+=1; 
-           }
-    distribucion[iterador] = contador/sampleo;
-    vector_proba[iterador] = prob;
+          contador+=1; 
     }
+    vector_proba[itera_proba] = prob;
+    distribucion[itera_proba] = contador/max_sample;
+  }
   
   escribir(vector_proba,distribucion,10);
-  }
+}
 
-void escribir(float vector1[],float vector2[],int max){
+void escribir(float vector1[],float vector2[],int total_proba){
   int i;
   FILE *fp;
-  fp = fopen("histograma.txt","w");
+  fp = fopen("resultado1b_n32_1.txt","w");
   
-  for(i=0;i<max;i++){
+  for(i=0;i<total_proba;i++){
 
     fprintf(fp, "%f\t%f\n",vector1[i],vector2[i] );
   }  
