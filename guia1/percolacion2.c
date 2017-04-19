@@ -88,25 +88,32 @@ int main(int argc,char *argv[])
   */
 
   //////// PARA el 1b:   /////////////
-
+  /*
   n = 4; //tamaño de la red 
   red = (int *)malloc(n*n*sizeof(int));
   z = 27000;
   int total_proba=10;
   histo_fperco(total_proba,red,n,z);
+  */
+  //////// //////// /////////////
 
-  /*
-  printf("\n");
-  //Calculos para el vector ns:
+  //////// PARA el 2:   /////////////
+  
   int* vector;
+  n=16;
   vector=(int *)malloc(n*n*sizeof(int));  
   for(i=0;i<n*n;i++){
-    vector[i]=0;
+      vector[i]=0;
   } 
+  red = (int *)malloc(n*n*sizeof(int));
+  llenar(red,n,0.5);
+  hoshen(red,n);
   calcula_ns(red,n,vector);
-  // fin de los calculos del vector ns
+  imprimir(vector, n);
 
-  */
+  //////// //////// /////////////
+
+  
   //free(red);
 
 
@@ -356,7 +363,7 @@ void calcula_ns(int *red,int n,int* vector){
     red=red+1;
     i = i+1;
   }
-  printf("Vector: \n"); 
+
   i=0;
   vector=vector+1;      // Empiezo desde el segundo elemento de vector para no contar los clusters de size cero.
   while(i<n*n){         //vector_ns guarda la cantidad de clusters (n) de tamaño s
@@ -366,7 +373,6 @@ void calcula_ns(int *red,int n,int* vector){
     vector = vector+1;  
     i = i+1;
   } 
-  printf("Vector_ns: \n"); 
 }
 
 
@@ -392,5 +398,6 @@ void resultado1a (int vector1[],double vector2[],double vector3[], int max){
 
   fclose(fp);
 }
+
 
   
