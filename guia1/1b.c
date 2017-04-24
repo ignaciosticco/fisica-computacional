@@ -19,8 +19,7 @@ int   cluster_infinito(int etiqueta, int* vector);
 void  calcula_ns(int *red,int n,int* vector);
 void  imprimir(int *red, int n);
 void  resultado1a (int vector1[],double vector2[],double vector3[], int max);
-void  resultado2(int n,int cantidad_probas,int z);
-void  resultado3(int z);
+
 
 
 
@@ -33,9 +32,9 @@ int main(int argc,char *argv[])
   int     size_max=10;          // cantidad de probabilidades 
   float   distribucion[size_max];
   float   vector_proba[size_max];
-  int     L[5]={4,16,32,64,128};  //tamaño de red
-  double  proba_cr[5];    //bisección 1a
-  double  varianza[5];    //bisección 1a
+  int     L[5]={4,16,32,64,128};	//tamaño de red
+  double  proba_cr[5];		//bisección 1a
+  double  varianza[5];		//bisección 1a
   
   srand(time(NULL)); 
   
@@ -89,29 +88,25 @@ int main(int argc,char *argv[])
   */
 
   //////// PARA el 1b:   /////////////
-  /*
+
   n = 4; //tamaño de la red 
   red = (int *)malloc(n*n*sizeof(int));
-  z = 27000;
+  z = 2;
   int total_proba=10;
   histo_fperco(total_proba,red,n,z);
-  
-  //////// //////// /////////////
 
-  //////// PARA el 2:   /////////////
-  n = 4;                    // tamaño de la red
-  int cantidad_probas=9;  
-  z = 1000;     
-  resultado2(n,cantidad_probas,z);
-  //////// //////// /////////////
+  /*
+  printf("\n");
+  //Calculos para el vector ns:
+  int* vector;
+  vector=(int *)malloc(n*n*sizeof(int));  
+  for(i=0;i<n*n;i++){
+    vector[i]=0;
+  } 
+  calcula_ns(red,n,vector);
+  // fin de los calculos del vector ns
+
   */
-
-  //////// PARA el 3:   /////////////
-  z = 100;            // cantidad de iteraciones   
-  resultado3(z);
-  //////// //////// /////////////
-
-  
   //free(red);
 
 
@@ -171,21 +166,21 @@ int hoshen(int *red,int n)
          }
 
       for(j=1;j<n;j++)
-  if (*(red+i+j))
-    {
-      s1=*(red+i+j-1); 
+	if (*(red+i+j))
+	  {
+	    s1=*(red+i+j-1); 
       s2=*(red+i+j-n);
 
-      if (s1*s2>0)   // Si esta en el caso 4 de la clase de guille
-        {
-    etiqueta_falsa(red+i+j,clase,s1,s2);
-        }
-      else 
-        { if (s1!=0) frag=actualizar(red+i+j,clase,s1,frag);
-          else       frag=actualizar(red+i+j,clase,s2,frag);
-        }
+	    if (s1*s2>0)   // Si esta en el caso 4 de la clase de guille
+	      {
+		etiqueta_falsa(red+i+j,clase,s1,s2);
+	      }
+	    else 
+	      { if (s1!=0) frag=actualizar(red+i+j,clase,s1,frag);
+	        else       frag=actualizar(red+i+j,clase,s2,frag);
+	      }
 
-    }
+	  }
     }
 
 
@@ -217,14 +212,14 @@ void llenar(int* red,int n,float proba){
 
 void imprimir(int *red, int n){
 
-  // Imprimo en pantalla la matriz///////
-  int i,j;
-  for(i=0;i<n;i=i+1){
-    for(j=0;j<n;j=j+1){
-      printf("%d    ",red[j+n*i]);
-    }
-    printf("\n");
-  }
+	// Imprimo en pantalla la matriz///////
+	int i,j;
+	for(i=0;i<n;i=i+1){
+		for(j=0;j<n;j=j+1){
+			printf("%d    ",red[j+n*i]);
+		}
+		printf("\n");
+	}
 }
 
 int  actualizar(int *red,int *clase,int s,int frag){
@@ -248,62 +243,63 @@ int  actualizar(int *red,int *clase,int s,int frag){
 
 
 void  etiqueta_falsa(int *red,int *clase,int s1,int s2){
-  int i,n;  
-   
-    while(clase[s1]<0){
-      s1=-clase[s1];
-    }   
-    while(clase[s2]<0){
-      s2=-clase[s2];
-    }
+	int i,n;	
+	 
+		while(clase[s1]<0){
+			s1=-clase[s1];
+		}		
+		while(clase[s2]<0){
+			s2=-clase[s2];
+		}
     if(s1==s2){
      *red=s1; 
      clase[s1]=s1;
     }
-    if(s1<s2){
-      clase[s2]=-s1;
+		if(s1<s2){
+			clase[s2]=-s1;
       clase[s1]=s1;
-      *red=s1;
-    }
+			*red=s1;
+		}
     if(s2<s1){
-      clase[s1]=-s2;
+			clase[s1]=-s2;
       clase[s2]=s2;
-      *red=s2;
-    }
+			*red=s2;
+		}
 }
 
 
 void  corregir_etiqueta(int *red,int *clase,int n){
-  int i,s;
+	int i,s;
  
-  for(i=0;i<n*n;i++)
+	for(i=0;i<n*n;i++)
   { 
-    s=*(red+i);
-    while(clase[s]<0){
-      s=-clase[s];
+		s=*(red+i);
+		while(clase[s]<0){
+			s=-clase[s];
       *(red+i)=s;
-    }
-  }
+		}
+	}
   
 }
 
 int percola (int *red, int n){
-  int i,j,s1,s2;
-  
-  for(i=0;i<n;i++){
-    s1=*(red+i);
-    if (s1>0){
-      for(j=0;j<n;j++){
-        s2=*(red+j+(n-1)*n);
-    
-        if(s1==s2){
-          return s1;
-        }               
-      }
-    }
-  }
-  return 0;
-} 
+	int i,j,s1,s2;
+	
+	for(i=0;i<n;i++){
+		s1=*(red+i);
+		if (s1>0){
+			for(j=0;j<n;j++){
+				s2=*(red+j+(n-1)*n);
+		
+				if(s1==s2){
+					return s1;
+				}
+								
+			}
+		}
+	}
+	return 0;
+}	
 
 
 void histo_fperco(int total_proba,int *red,int n,float max_sample){
@@ -313,8 +309,8 @@ void histo_fperco(int total_proba,int *red,int n,float max_sample){
   float vector_proba [total_proba];
   float distribucion [total_proba];
   float denominador,primera_proba;
-  denominador = total_proba*10.0;
-  primera_proba = 0.55;
+  denominador = total_proba*100.0;
+  primera_proba = 0.565;
 
   for(itera_proba=0;itera_proba < total_proba;itera_proba++){
     contador=0;
@@ -336,7 +332,7 @@ void histo_fperco(int total_proba,int *red,int n,float max_sample){
 void escribir(float vector1[],float vector2[],int total_proba){
   int i;
   FILE *fp;
-  fp = fopen("resultado3.txt","w");
+  fp = fopen("resultado1b_n4_2.txt","w");
   
   for(i=0;i<total_proba;i++){
 
@@ -348,22 +344,19 @@ void escribir(float vector1[],float vector2[],int total_proba){
 
 
 void calcula_ns(int *red,int n,int* vector){
-  int i;
+  int i=0;
   int* vector_ns;
   vector_ns = (int *)malloc(n*n*sizeof(int));
   for(i=0;i<n*n;i++){       // Inicializo con ceros al vector_ns
     vector_ns[i]=0;
   }
-  for(i=0;i<n*n;i++){       // Inicializo con ceros al VECTOR
-      vector[i]=0;
-  } 
   i=0;
   while(i<n*n){            // Este vector guarda todos los clusters
     vector[*red] = vector[*red] + 1;  // En la coordeanda i guarda la cantidad de nodos con etiqueta i.
     red=red+1;
     i = i+1;
   }
-
+  printf("Vector: \n"); 
   i=0;
   vector=vector+1;      // Empiezo desde el segundo elemento de vector para no contar los clusters de size cero.
   while(i<n*n){         //vector_ns guarda la cantidad de clusters (n) de tamaño s
@@ -373,6 +366,7 @@ void calcula_ns(int *red,int n,int* vector){
     vector = vector+1;  
     i = i+1;
   } 
+  printf("Vector_ns: \n"); 
 }
 
 
@@ -399,68 +393,5 @@ void resultado1a (int vector1[],double vector2[],double vector3[], int max){
   fclose(fp);
 }
 
-void resultado2(int n,int cantidad_probas,int z){
-  int   itera_proba,sample,i,etiqueta,masa;
-  int   vector[n*n];
-  float proba[cantidad_probas];
-  float fuerza_cluster_percolante[cantidad_probas];
-  int*  red;
-  float p,densidad;
-
-  red = (int *)malloc(n*n*sizeof(int)); 
-
-  for (itera_proba=0;itera_proba<cantidad_probas;itera_proba++){
-    p = 0.1+itera_proba/10.0;
-    densidad=0.0;
-    
-    for(sample=0;sample<z;sample++){  
-        llenar(red,n,p); 
-        hoshen(red,n);
-        etiqueta=percola(red,n);
-        calcula_ns(red,n,vector);
-        masa = cluster_infinito(etiqueta,vector); 
-        densidad += masa/((float)n*(float)n);   
-    }
-    proba[itera_proba] = p;
-    fuerza_cluster_percolante[itera_proba]=densidad/(float)z;
-    
-  }
-  escribir(proba,fuerza_cluster_percolante,cantidad_probas);
-} 
-
-
-void resultado3(int z){
-  int   iter_size,n,sample,masa,etiqueta;
-  int*  red;
-  int   iter_size_max=8;
-  float masa_percolante[iter_size_max];
-  float size[iter_size_max];
-  float p = 0.592603;
-  double masa_acum;
- 
-  for (iter_size=0;iter_size<iter_size_max;iter_size++){
-    n = pow(2,iter_size+2);
-    red = (int *)malloc(n*n*sizeof(int));
-    int vector[n*n];
-    masa_acum=0.0;
-    for(sample=0;sample<z;sample++){  
-        llenar(red,n,p); 
-        hoshen(red,n);
-        etiqueta=percola(red,n);
-        calcula_ns(red,n,vector);
-        masa = cluster_infinito(etiqueta,vector); 
-        masa_acum += (double)masa/((double)z);   
-    }
-    size[iter_size] = n ;
-    masa_percolante[iter_size]=(float)(masa_acum);
-  }
   
-  escribir(size,masa_percolante,iter_size_max);
-} 
 
-
-
-
-
-
-  
