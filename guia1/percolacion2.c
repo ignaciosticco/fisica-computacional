@@ -16,11 +16,13 @@ int   percola(int *red, int n);
 void  histo_fperco(int total_proba,int *red,int n,float max_sample);
 void  escribir(float vector1[],float vector2[],int total_proba);
 int   cluster_infinito(int etiqueta, int* vector);
-void  calcula_ns(int *red,int n,int* vector);
+void  calcula_ns(int *red,int n,int* vector,int* vector_ns);
 void  imprimir(int *red, int n);
 void  resultado1a (int vector1[],double vector2[],double vector3[], int max);
 void  resultado2(int n,int cantidad_probas,int z);
 void  resultado3(int z);
+int   m2(int* vector_ns,int n);
+void  resultado6(int n,float p_min,float p_max,float cant_p,int z);
 
 
 
@@ -33,9 +35,9 @@ int main(int argc,char *argv[])
   int     size_max=10;          // cantidad de probabilidades 
   float   distribucion[size_max];
   float   vector_proba[size_max];
-  int     L[5]={4,16,32,64,128};  //tamaño de red
-  double  proba_cr[5];    //bisección 1a
-  double  varianza[5];    //bisección 1a
+  //int     L[5]={4,16,32,64,128};  //tamaño de red
+  //double  proba_cr[5];    //bisección 1a
+  //double  varianza[5];    //bisección 1a
   
   srand(time(NULL)); 
   
@@ -104,12 +106,24 @@ int main(int argc,char *argv[])
   z = 1000;     
   resultado2(n,cantidad_probas,z);
   //////// //////// /////////////
-  */
+  
 
   //////// PARA el 3:   /////////////
   z = 100;            // cantidad de iteraciones   
   resultado3(z);
   //////// //////// /////////////
+  */
+
+  //////// PARA el 6:   /////////////
+  float p_min,p_max;
+  int   cant_p;
+
+  z=2;
+  p_min = 0.0;
+  p_max = 0.9;
+  cant_p = 4;
+  n=6;
+  resultado6(n,p_min,p_max,cant_p,z);
 
   
   //free(red);
@@ -336,7 +350,7 @@ void histo_fperco(int total_proba,int *red,int n,float max_sample){
 void escribir(float vector1[],float vector2[],int total_proba){
   int i;
   FILE *fp;
-  fp = fopen("resultado3.txt","w");
+  fp = fopen("resultado6_.txt","w");
   
   for(i=0;i<total_proba;i++){
 
@@ -347,10 +361,10 @@ void escribir(float vector1[],float vector2[],int total_proba){
 }
 
 
-void calcula_ns(int *red,int n,int* vector){
+void calcula_ns(int *red,int n,int* vector,int* vector_ns){
   int i;
-  int* vector_ns;
-  vector_ns = (int *)malloc(n*n*sizeof(int));
+  //int* vector_ns;
+  //vector_ns = (int *)malloc(n*n*sizeof(int));
   for(i=0;i<n*n;i++){       // Inicializo con ceros al vector_ns
     vector_ns[i]=0;
   }
@@ -399,6 +413,13 @@ void resultado1a (int vector1[],double vector2[],double vector3[], int max){
   fclose(fp);
 }
 
+/////// IMPORTANTE: si se quieren usar la funcion resultado2 o resultado3,
+//                 se debe modificar calcula_ns. Se debe quitar el ultimo 
+//                 input de la misma. Esto lo hice para usar el vector_ns
+//                 en la funcion del ejercicio 6
+
+
+/*    
 void resultado2(int n,int cantidad_probas,int z){
   int   itera_proba,sample,i,etiqueta,masa;
   int   vector[n*n];
@@ -458,7 +479,62 @@ void resultado3(int z){
   escribir(size,masa_percolante,iter_size_max);
 } 
 
+*/
+int m2(int* vector_ns,int n){
+  int i;
+  float res=0;
+  for(i=0;i<n*n;i++){
+    res += (i*i)*(*vector_ns); 
+    //printf("%f\n",res);
+    vector_ns+=1;
+  }
+  return res;
 
+}
+
+void  resultado6(int n,float p_min,float p_max,float cant_p,int z){
+  int*    red=(int *)malloc(n*n*sizeof(int));
+  float*  vector_m = (float *)malloc(cant_p*sizeof(float));
+  int*    vector_ns = (int *)malloc(n*n*sizeof(int));
+  int*    vector=(int *)malloc(n*n*sizeof(int));
+  int     i,valor_m,sample;
+  float*  vector_proba = (float *)malloc(cant_p*sizeof(float));
+  float   proba;
+  float   paso = (p_max-p_min)/(cant_p-1);
+
+  red = (int *)malloc(n*n*sizeof(int));
+  i=0;
+  sample=0;
+  proba = p_min;
+  llenar(red,n,1);
+  imprimir(red,n);
+  hoshen(red,n);
+  calcula_ns(red,n,vector,vector_ns);
+  imprimir(vector_ns,n);
+  printf("%i\n",m2(vector_ns, n));
+  while(i<cant_p){          // Loop de probabilidades
+    valor_m = 0.0;
+    sample = 0;
+    while(sample<z){        // Loop de sampleos
+        llenar(red,n,proba);
+        //imprimir(red,n);
+        hoshen(red,n);
+        calcula_ns(red,n,vector,vector_ns);
+        valor_m += (double)m2(vector_ns, n)/(double)z;
+        sample++;
+        //printf("%i\t%i\n",i,sample);
+        }
+    vector_m[i] = (float)valor_m; 
+    vector_proba[i] = proba;
+    //vector_m = vector_m+1;
+    //vector_proba =+1;
+    proba +=paso;
+    i++;
+  }
+  escribir(vector_proba,vector_m,cant_p);
+
+
+}
 
 
 
