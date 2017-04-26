@@ -23,6 +23,9 @@ void  resultado2(int n,int cantidad_probas,int z);
 void  resultado3(int z);
 int   m2(int* vector_ns,int n);
 void  resultado6(int n,float p_min,float p_max,float cant_p,int z);
+int   notinvector(int x,int vector[],int longitud);
+void  percola_varios(int* red,int n,int vector[]);
+int   resta_clusters_infinitos(int m2,int n,int* red,int* vector);
 
 
 
@@ -35,99 +38,26 @@ int main(int argc,char *argv[])
   int     size_max=10;          // cantidad de probabilidades 
   float   distribucion[size_max];
   float   vector_proba[size_max];
-  //int     L[5]={4,16,32,64,128};  //tamaño de red
-  //double  proba_cr[5];    //bisección 1a
-  //double  varianza[5];    //bisección 1a
   
   srand(time(NULL)); 
   
   n=N;
   z=Z;
-  /*  
-  // PARA el 1a:
-
-  for (k=0;k<5;k++)
-    {
-  
-    n = L[k];
-    p_med=0.0;
-    p_cuadrado=0.0;
-
-    red=(int *)malloc(n*n*sizeof(int));
-
-    for(i=0;i<z;i++)
-     {
-      prob=0.5;
-      denominador=2.0;    
-      
-      for(j=0;j<P;j++)
-        {
-
-          llenar(red,n,prob);
-          hoshen(red,n);
-
-          denominador=2.0*denominador;
-          if (percola(red,n)!=0){ 
-             prob+=(-1.0/denominador); 
-            
-             }
-          else {
-            prob+=(1.0/denominador);
-          }
-
-        }
-        p_med+=(double)prob/(double)z;
-        p_cuadrado+=(double)prob*(double)prob/(double)z;
-      }
-
-
-     proba_cr[k] = p_med;
-     p_cuadrado = p_cuadrado;
-     varianza[k] = sqrt(p_cuadrado - (p_med*p_med));
-     free(red);
-
- }
-  //resultado1a(L,proba_cr,varianza,5);
-  */
-
-  //////// PARA el 1b:   /////////////
-  /*
-  n = 4; //tamaño de la red 
-  red = (int *)malloc(n*n*sizeof(int));
-  z = 27000;
-  int total_proba=10;
-  histo_fperco(total_proba,red,n,z);
-  
-  //////// //////// /////////////
-
-  //////// PARA el 2:   /////////////
-  n = 4;                    // tamaño de la red
-  int cantidad_probas=9;  
-  z = 1000;     
-  resultado2(n,cantidad_probas,z);
-  //////// //////// /////////////
-  
-
-  //////// PARA el 3:   /////////////
-  z = 100;            // cantidad de iteraciones   
-  resultado3(z);
-  //////// //////// /////////////
-  */
 
   //////// PARA el 6:   /////////////
+  
   float p_min,p_max;
   int   cant_p;
 
-  z=30;
-  p_min = 0.5920;
-  p_max = 0.5931;
-  cant_p = 50;
+  z=100;
+  p_min = 0.52;
+  p_max = 0.62;
+  cant_p = 200;
   n=128;
   resultado6(n,p_min,p_max,cant_p,z);
-
+  
   
   //free(red);
-
 
   return 0;
 }
@@ -350,7 +280,7 @@ void histo_fperco(int total_proba,int *red,int n,float max_sample){
 void escribir(float vector1[],float vector2[],int total_proba){
   int i;
   FILE *fp;
-  fp = fopen("resultado6_.txt","w");
+  fp = fopen("resultado6_n128.txt","w");
   
   for(i=0;i<total_proba;i++){
 
@@ -412,91 +342,81 @@ void resultado1a (int vector1[],double vector2[],double vector3[], int max){
   fclose(fp);
 }
 
-/////// IMPORTANTE: si se quieren usar la funcion resultado2 o resultado3,
-//                 se debe modificar calcula_ns. Se debe quitar el ultimo 
-//                 input de la misma. Esto lo hice para usar el vector_ns
-//                 en la funcion del ejercicio 6
-
-
-/*    
-void resultado2(int n,int cantidad_probas,int z){
-  int   itera_proba,sample,i,etiqueta,masa;
-  int   vector[n*n];
-  float proba[cantidad_probas];
-  float fuerza_cluster_percolante[cantidad_probas];
-  int*  red;
-  float p,densidad;
-
-  red = (int *)malloc(n*n*sizeof(int)); 
-
-  for (itera_proba=0;itera_proba<cantidad_probas;itera_proba++){
-    p = 0.1+itera_proba/10.0;
-    densidad=0.0;
-    
-    for(sample=0;sample<z;sample++){  
-        llenar(red,n,p); 
-        hoshen(red,n);
-        etiqueta=percola(red,n);
-        calcula_ns(red,n,vector);
-        masa = cluster_infinito(etiqueta,vector); 
-        densidad += masa/((float)n*(float)n);   
-    }
-    proba[itera_proba] = p;
-    fuerza_cluster_percolante[itera_proba]=densidad/(float)z;
-    
-  }
-  escribir(proba,fuerza_cluster_percolante,cantidad_probas);
-} 
-
-
-void resultado3(int z){
-  int   iter_size,n,sample,masa,etiqueta;
-  int*  red;
-  int   iter_size_max=8;
-  float masa_percolante[iter_size_max];
-  float size[iter_size_max];
-  float p = 0.592603;
-  double masa_acum;
- 
-  for (iter_size=0;iter_size<iter_size_max;iter_size++){
-    n = pow(2,iter_size+2);
-    red = (int *)malloc(n*n*sizeof(int));
-    int vector[n*n];
-    masa_acum=0.0;
-    for(sample=0;sample<z;sample++){  
-        llenar(red,n,p); 
-        hoshen(red,n);
-        etiqueta=percola(red,n);
-        calcula_ns(red,n,vector);
-        masa = cluster_infinito(etiqueta,vector); 
-        masa_acum += (double)masa/((double)z);   
-    }
-    size[iter_size] = n ;
-    masa_percolante[iter_size]=(float)(masa_acum);
-  }
-  
-  escribir(size,masa_percolante,iter_size_max);
-} 
-
-*/
 int m2(int* vector_ns,int n){
   int i;
-  float res=0;
+  int res=0;
   for(i=0;i<n*n;i++){
-    res += (i*i)*(*vector_ns); 
+    res += (i*i)*(vector_ns[i]); 
     //printf("%f\n",res);
-    vector_ns+=1;
   }
   return res;
 
 }
 
+
+void percola_varios(int* red,int n,int vector[]){
+  int i,j,s1,s2,flag; 
+  int sitio = 0;
+  i = 0;
+  while(i<n){
+    s1=*(red+i);
+    if (s1>0 && notinvector(s1, vector,n)==0){
+      j = 0;
+      flag = 0;
+      while(j<n && flag!=1){
+        s2=*(red+j+(n-1)*n);    
+        if(s1==s2){
+          vector[sitio] = s1;
+          flag=1;
+          sitio++;
+        } 
+        j++;              
+      }
+    }
+    i++;
+  }
+}
+
+
+int notinvector(int x,int vector[],int longitud){
+  // Devuelve 1 si x esta en el vector (0 si no esta en el vector)
+  int res = 0;
+  int i = 0;
+  while (i<longitud && res==0){
+    if(vector[i]==x){
+      res = 1;
+    }
+    i++;
+  }
+  return res;
+}
+
+int resta_clusters_infinitos(int m2,int n,int* red,int* vector){
+  int i,j,s0;
+  int vector_etiquetas[n];
+  // Inicializo el vector de etiquetas con ceros
+  for(i=0;i<n;i++){
+    vector_etiquetas[i]=0;
+  }
+  percola_varios(red,n,vector_etiquetas);
+  j=0;
+  while(j<n && vector_etiquetas[j]!=0){
+    // vector[i] = cantidad de clusters de tamaño i.
+    s0 = cluster_infinito(vector_etiquetas[j],vector);
+    m2 = m2 - (s0*s0);
+    j++;
+  }
+
+  return m2;
+}
+
+
 void  resultado6(int n,float p_min,float p_max,float cant_p,int z){
   int*    red=(int *)malloc(n*n*sizeof(int));
   float*  vector_m = (float *)malloc(cant_p*sizeof(float));
   int*    vector_ns = (int *)malloc(n*n*sizeof(int));
-  int*    vector=(int *)malloc(n*n*sizeof(int));
-  int     i,valor_m,sample,s0,etiqueta;
+  int*    vector=(int *)malloc(n*n*sizeof(int)); // en la coordenada i guarda la cantidad de clusters de tamaño i. 
+  int     i,valor_m,sample;
   float*  vector_proba = (float *)malloc(cant_p*sizeof(float));
   float   proba;
   float   paso = (p_max-p_min)/(cant_p-1);
@@ -512,13 +432,23 @@ void  resultado6(int n,float p_min,float p_max,float cant_p,int z){
     while(sample<z){        // Loop de sampleos
         llenar(red,n,proba);
         hoshen(red,n);
+        /*
+        red[0]=2;
+        red[1]=0;
+        red[2]=3;
+        red[3]=2;
+        red[4]=0;
+        red[5]=3;
+        red[6]=2;
+        red[7]=0;
+        red[8]=3;
+        */
         calcula_ns(red,n,vector,vector_ns);
-        etiqueta = percola(red,n);
-        s0 = cluster_infinito(etiqueta,vector); 
-        valor_m += ((double)m2(vector_ns,n) - (s0*s0) )/(double)z;
+        valor_m += m2(vector_ns,n);
+        valor_m = resta_clusters_infinitos(valor_m,n,red,vector);
         sample++;
         }
-    vector_m[i] = (float)valor_m; 
+    vector_m[i] = (float)valor_m/z; 
     vector_proba[i] = proba;
     proba +=paso;
     i++;
@@ -526,8 +456,3 @@ void  resultado6(int n,float p_min,float p_max,float cant_p,int z){
   escribir(vector_proba,vector_m,cant_p);
 
 }
-
-
-
-
-  
