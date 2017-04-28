@@ -30,7 +30,7 @@ int main(int argc,char *argv[])
   srand(time(NULL)); 
   
   //////// PARA el 3:   /////////////
-  int z = 27;            // cantidad de iteraciones   
+  int z = 50;            // cantidad de iteraciones   
   resultado3(z);
   //////// //////// /////////////
 
@@ -292,6 +292,7 @@ void calcula_ns(int *red,int n,int* vector){
       }  
     i++;
   } 
+	free (vector_ns);
 }
 
 
@@ -319,7 +320,9 @@ void resultado3(int z){
   for (iter_size=0;iter_size<iter_size_max;iter_size++){
     n = pow(2,iter_size+2);
     red = (int *)malloc(n*n*sizeof(int));
-    int vector[n*n];
+    int* vector;
+    vector=(int *)malloc(n*n*sizeof(int));
+
     masa_acum=0.0;
     for(sample=0;sample<z;sample++){  
         llenar(red,n,p);
@@ -331,6 +334,9 @@ void resultado3(int z){
     }
     size[iter_size] = n ;
     masa_percolante[iter_size]=(float)(masa_acum);
+    free (red);
+    free (vector);
+    	
   }
   
   escribir(size,masa_percolante,iter_size_max);

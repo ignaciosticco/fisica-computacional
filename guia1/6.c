@@ -25,35 +25,25 @@ int   m2(int* vector_ns,int n);
 void  resultado6(int n,float p_min,float p_max,float cant_p,int z);
 int   notinvector(int x,int vector[],int longitud);
 void  percola_varios(int* red,int n,int vector[]);
-int   resta_clusters_infinitos(int m2,int n,int* red,int* vector);
+double   resta_clusters_infinitos(double m2,int n,int* red,int* vector,int z);
 
 
 
 int main(int argc,char *argv[])
 {
-  int     i,j,*red,n,z,k;
-  float   prob,denominador;
-  double  p_med = 0.0;
-  double  p_cuadrado = 0.0;
-  int     size_max=10;          // cantidad de probabilidades 
-  float   distribucion[size_max];
-  float   vector_proba[size_max];
   
   srand(time(NULL)); 
-  
-  n=N;
-  z=Z;
 
   //////// PARA el 6:   /////////////
   
   float p_min,p_max;
   int   cant_p;
 
-  z=100;
+  int z=5;
   p_min = 0.52;
   p_max = 0.62;
   cant_p = 200;
-  n=128;
+  int n = 128;
   resultado6(n,p_min,p_max,cant_p,z);
   
   
@@ -192,7 +182,6 @@ int  actualizar(int *red,int *clase,int s,int frag){
 
 
 void  etiqueta_falsa(int *red,int *clase,int s1,int s2){
-  int i,n;  
    
     while(clase[s1]<0){
       s1=-clase[s1];
@@ -347,7 +336,6 @@ int m2(int* vector_ns,int n){
   int res=0;
   for(i=0;i<n*n;i++){
     res += (i*i)*(vector_ns[i]); 
-    //printf("%f\n",res);
   }
   return res;
 
@@ -391,7 +379,7 @@ int notinvector(int x,int vector[],int longitud){
   return res;
 }
 
-int resta_clusters_infinitos(int m2,int n,int* red,int* vector){
+double resta_clusters_infinitos(double m2,int n,int* red,int* vector,int z){
   int i,j,s0;
   int vector_etiquetas[n];
   // Inicializo el vector de etiquetas con ceros
@@ -400,10 +388,16 @@ int resta_clusters_infinitos(int m2,int n,int* red,int* vector){
   }
   percola_varios(red,n,vector_etiquetas);
   j=0;
+  //if (m2<0){
+  //  printf("%i\n",m2 );
+ // }
   while(j<n && vector_etiquetas[j]!=0){
     // vector[i] = cantidad de clusters de tamaño i.
     s0 = cluster_infinito(vector_etiquetas[j],vector);
-    m2 = m2 - (s0*s0);
+    //if (m2<s0){
+     // printf("%i\t%i\t%i\n",j,m2,s0);
+    //}
+    m2 = m2 - (s0*s0)/((double) z) ;
     j++;
   }
 
@@ -416,10 +410,11 @@ void  resultado6(int n,float p_min,float p_max,float cant_p,int z){
   float*  vector_m = (float *)malloc(cant_p*sizeof(float));
   int*    vector_ns = (int *)malloc(n*n*sizeof(int));
   int*    vector=(int *)malloc(n*n*sizeof(int)); // en la coordenada i guarda la cantidad de clusters de tamaño i. 
-  int     i,valor_m,sample;
+  int     i,sample;
   float*  vector_proba = (float *)malloc(cant_p*sizeof(float));
   float   proba;
   float   paso = (p_max-p_min)/(cant_p-1);
+  double  valor_m;
 
   //red = (int *)malloc(n*n*sizeof(int));
   i=0;
@@ -444,15 +439,19 @@ void  resultado6(int n,float p_min,float p_max,float cant_p,int z){
         red[8]=3;
         */
         calcula_ns(red,n,vector,vector_ns);
-        valor_m += m2(vector_ns,n);
-        valor_m = resta_clusters_infinitos(valor_m,n,red,vector);
+        valor_m += m2(vector_ns,n)/(double) z;
+        valor_m = resta_clusters_infinitos(valor_m,n,red,vector,z);
         sample++;
         }
-    vector_m[i] = (float)valor_m/z; 
+    vector_m[i] = (float)valor_m; 
     vector_proba[i] = proba;
     proba +=paso;
     i++;
   }
   escribir(vector_proba,vector_m,cant_p);
-
+  free (red);
+  free (vector);
+  free (vector_proba);
+  free (vector_m);
+  free (vector_ns);
 }
