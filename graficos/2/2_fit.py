@@ -32,49 +32,48 @@ params = {'backend': 'ps',
 pylab.rcParams.update(params)
 #################### DATA ##############################
 
-data = np.genfromtxt("resultado1d_prob0.592700_n1024", delimiter = '\t')
-
-'''
-s = data[:1500,0]
-ns =data[:1500,1]
-log_s=np.log(s)
-log_ns=np.log(ns)
-'''
-log_s=[]
-log_ns=[]
+data = np.genfromtxt("resultado2_n128_3.txt", delimiter = '\t')
 
 
+p = data[:,0]
+fuerza_cp = data[:,1]
+
+pc=0.5927
+proba = []
+fcp = []
 i=0
-while (data[i,1]>250):
-	log_s+=[np.log(data[i,0])]
-	log_ns+=[np.log(data[i,1])]
-	i+=1
+while i<len(p):
+     if p[i]>pc:
+          proba+= [np.log(p[i]-pc)]
+          fcp+= [np.log(fuerza_cp[i])]
+     i+=1
 
+coef_fit = np.polyfit(proba[:6],fcp[:6],1)
 
-coef_fit = np.polyfit(log_s,log_ns,1)
-print(coef_fit)
-x = np.linspace(0,max(log_s),1000)
+x = np.linspace(proba[0],proba[6],100)
 y = coef_fit[0]*x+coef_fit[1]
+print(coef_fit[0])
 
 def rsquared(x, y):
     """ Return R^2 where x and y are array-like."""
 
     slope, intercept, r_value, p_value, std_err = scipy.stats.linregress(x, y)
     return r_value**2
-print (rsquared(log_s,log_ns))
+print (rsquared(proba[:6],fcp[:6]))
 
 
 
 #################### PLOT specification ##############################
 
-plt.plot(log_s,log_ns,'ko',markersize=1,label='k',zorder=3) 
-plt.plot(x,y,'r')
+plt.plot(proba,fcp,'ko',label='$n=128$',markersize=2,zorder=2)
+plt.plot(x,y,'r',linewidth=1,zorder=2)
 
-pylab.xlabel('log(s)')
-pylab.ylabel('log($n_s$)')
+pylab.xlabel('log($p-p_c$)')
+pylab.ylabel('log~(P)')
 #pylab.ylim(2, 18)
 #pylab.xlim(14, 20)
 #pylab.xticks(np.arange(14,22,2))
 #pylab.yticks(np.arange(2,20,4))
 #pylab.show()
-pylab.savefig('1d_1.eps', format='eps', bbox_inches='tight')
+#plt.legend(loc='right',labelspacing=-0.1,borderpad=0.3,handletextpad=0.5,fontsize=6,numpoints=1)
+pylab.savefig('2_fit.eps', format='eps', bbox_inches='tight')

@@ -40,8 +40,8 @@ m2 = data[:,1]
 plt.plot(p,m2/(128*128),'ob',markersize=2,label='k',zorder=3) 
 #plt.plot(x,y,'r')
 
-pylab.xlabel('p')
-pylab.ylabel('m2')
+pylab.xlabel('$p$')
+pylab.ylabel('$m_2$')
 #pylab.ylim(2, 18)
 #pylab.xlim(14, 20)
 #pylab.xticks(np.arange(14,22,2))

@@ -34,7 +34,7 @@ data1 = np.genfromtxt("resultado2_n4_1.txt", delimiter = '\t')
 data2 = np.genfromtxt("resultado2_n16_1.txt", delimiter = '\t')
 data3 = np.genfromtxt("resultado2_n32_1.txt", delimiter = '\t')
 data4 = np.genfromtxt("resultado2_n64_1.txt", delimiter = '\t')
-data5 = np.genfromtxt("resultado2_n128_1.txt", delimiter = '\t')
+data5 = np.genfromtxt("resultado2_n128_2.txt", delimiter = '\t')
 
 p1 = data1[:,0]
 fuerza_cp_1 = data1[:,1]
@@ -49,15 +49,15 @@ fuerza_cp_5 = data5[:,1]
 
 #################### PLOT specification ##############################
 
-plt.plot(p1,fuerza_cp_1,'b',label='$n=4$',lw=0.6,zorder=2)
-plt.plot(p2,fuerza_cp_2,'r',label='$n=16$',lw=0.6,zorder=2)
-plt.plot(p3,fuerza_cp_3,'g',label='$n=32$',lw=0.6,zorder=2)
-plt.plot(p4,fuerza_cp_4,'c',label='$n=64$',lw=0.6,zorder=2)
-plt.plot(p5,fuerza_cp_5,'k',label='$n=128$',lw=0.6,zorder=2)
+plt.plot(p1,fuerza_cp_1,'b',label='$L=4$',lw=0.6,zorder=2)
+plt.plot(p2,fuerza_cp_2,'r',label='$L=16$',lw=0.6,zorder=2)
+plt.plot(p3,fuerza_cp_3,'g',label='$L=32$',lw=0.6,zorder=2)
+plt.plot(p4,fuerza_cp_4,'c',label='$L=64$',lw=0.6,zorder=2)
+plt.plot(p5,fuerza_cp_5,'k',label='$L=128$',lw=0.6,zorder=2)
 
 
-pylab.xlabel('p')
-pylab.ylabel('Fuerza c. percolante')
+pylab.xlabel('$p$')
+pylab.ylabel('P')
 #pylab.ylim(2, 18)
 #pylab.xlim(14, 20)
 #pylab.xticks(np.arange(14,22,2))

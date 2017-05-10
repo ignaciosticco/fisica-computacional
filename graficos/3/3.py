@@ -2,6 +2,8 @@ import matplotlib.pyplot as plt
 import pylab
 import numpy as np
 import math
+import scipy
+from   scipy import stats
 
 golden_mean = (math.sqrt(5)-1.0)/2.0        # Aesthetic ratio
 fig_width = 3+3/8 			    # width  in inches
@@ -43,13 +45,20 @@ print(np.polyfit(log_size,log_masa_cperco,1,full=True))
 x = np.linspace(0,max(log_size),500)
 y = coef_fit[0]*x+coef_fit[1]
 
+def rsquared(x, y):
+    """ Return R^2 where x and y are array-like."""
+
+    slope, intercept, r_value, p_value, std_err = scipy.stats.linregress(x, y)
+    return r_value**2
+print (rsquared(log_size,log_masa_cperco))
+
 #################### PLOT specification ##############################
 
 plt.plot(log_size,log_masa_cperco,'ko',markersize=2,label='k',zorder=3) 
 plt.plot(x,y,'r')
 
-pylab.xlabel('log~(size)')
-pylab.ylabel('log~(masa c.p)')
+pylab.xlabel('log~(L)')
+pylab.ylabel('log~($M_{p}$)')
 #pylab.ylim(2, 18)
 #pylab.xlim(14, 20)
 #pylab.xticks(np.arange(14,22,2))
